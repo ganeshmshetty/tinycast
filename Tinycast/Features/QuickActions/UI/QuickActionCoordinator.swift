@@ -248,8 +248,11 @@ final class QuickActionCoordinator {
         _ state: QuickActionPanelState, previewing: Bool
     ) async throws -> String {
         guard !previewing else { return try await generate(state, streaming: true) }
+        let mine = generation
         core.showProgress(state.action.progressTitle)
-        defer { core.hideProgress() }
+        defer {
+            if generation == mine { core.hideProgress() }
+        }
         return try await generate(state, streaming: false)
     }
 
